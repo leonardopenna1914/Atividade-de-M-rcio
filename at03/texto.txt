@@ -1,0 +1,214 @@
+import java.util.Scanner;
+
+public class Exemplo {
+    public static Scanner input = new Scanner(System.in);
+    public static final int QTD = 3;
+
+    // Vetores paralelos substituindo a classe Produto
+    public static String[] nomes = new String[QTD];
+    public static String[] descricoes = new String[QTD];
+    public static String[] categorias = new String[QTD];
+    public static int[] estoques = new int[QTD];
+    public static int[] qtdMinima = new int[QTD];
+    public static double[] precos = new double[QTD];
+
+    public static void main(String[] args) {
+        int tam = 0;
+        int escolha;
+
+        do {
+            System.out.println("MENU");
+            System.out.println("1 Cadastrar novo produto");
+            System.out.println("2 Listar produtos");
+            System.out.println("3 Filtrar por categoria");
+            System.out.println("4 Ordenar");
+            System.out.println("5 Remover produto");
+            System.out.println("6 Atualizar preço");
+            System.out.println("7 Subtotal por categoria");
+            System.out.println("0 Sair");
+            escolha = input.nextInt();
+
+            switch (escolha) {
+                case 1: tam = cadastrar(tam); break;
+                case 2: listar(tam); break;
+                case 3: filtrar(tam); break;
+                case 4: ordenar(tam); break;
+                case 5: tam = remover(tam); break;
+                case 6: atualizarPreco(tam); break;
+                case 7: subtotal(tam); break;
+                case 0: System.out.println("Saindo..."); break;
+                default: System.out.println("Opção inválida."); 
+            }
+
+        } while (escolha != 0);
+    }
+
+    // ---------------------------------------
+    // CADASTRAR
+    // ---------------------------------------
+    public static int cadastrar(int tam) {
+        if (tam >= QTD) {
+            System.out.println("Vetor cheio!");
+            return tam;
+        }
+
+        input.nextLine(); // limpar buffer
+
+        System.out.println("Nome do Produto:");
+        nomes[tam] = input.nextLine();
+
+        System.out.println("Descrição:");
+        descricoes[tam] = input.nextLine();
+
+        System.out.println("Categoria:");
+        categorias[tam] = input.nextLine();
+
+        System.out.println("Quantidade em estoque:");
+        estoques[tam] = input.nextInt();
+
+        System.out.println("Quantidade mínima:");
+        qtdMinima[tam] = input.nextInt();
+
+        System.out.println("Preço:");
+        precos[tam] = input.nextDouble();
+
+        return tam + 1;
+    }
+
+    // ---------------------------------------
+    // LISTAR
+    // ---------------------------------------
+    public static void listar(int tam) {
+        for (int i = 0; i < tam; i++) {
+            imprimir(i);
+        }
+    }
+
+    public static void imprimir(int i) {
+        System.out.println("Nome: " + nomes[i]);
+        System.out.println("Descrição: " + descricoes[i]);
+        System.out.println("Categoria: " + categorias[i]);
+        System.out.println("Estoque: " + estoques[i]);
+        System.out.println("Preço: " + precos[i]);
+        System.out.println("--------------------------");
+    }
+
+    // ---------------------------------------
+    // FILTRAR
+    // ---------------------------------------
+    public static void filtrar(int tam) {
+        input.nextLine();
+        System.out.println("Categoria desejada:");
+        String categ = input.nextLine();
+
+        for (int i = 0; i < tam; i++) {
+            if (categorias[i].equalsIgnoreCase(categ)) {
+                imprimir(i);
+            }
+        }
+    }
+
+    // ---------------------------------------
+    // ORDENAR (bubble sort simples)
+    // ---------------------------------------
+    public static void ordenar(int tam) {
+        for (int i = 0; i < tam - 1; i++) {
+            for (int j = 0; j < tam - 1 - i; j++) {
+
+                if (categorias[j].compareToIgnoreCase(categorias[j + 1]) > 0) {
+
+                    trocar(j, j + 1);
+                }
+            }
+        }
+    }
+
+    public static void trocar(int a, int b) {
+        String tempStr;
+        int tempInt;
+        double tempDouble;
+
+        tempStr = nomes[a]; nomes[a] = nomes[b]; nomes[b] = tempStr;
+        tempStr = descricoes[a]; descricoes[a] = descricoes[b]; descricoes[b] = tempStr;
+        tempStr = categorias[a]; categorias[a] = categorias[b]; categorias[b] = tempStr;
+
+        tempInt = estoques[a]; estoques[a] = estoques[b]; estoques[b] = tempInt;
+        tempInt = qtdMinima[a]; qtdMinima[a] = qtdMinima[b]; qtdMinima[b] = tempInt;
+
+        tempDouble = precos[a]; precos[a] = precos[b]; precos[b] = tempDouble;
+    }
+
+    // ---------------------------------------
+    // REMOVER
+    // ---------------------------------------
+    public static int remover(int tam) {
+        input.nextLine();
+        System.out.println("Nome do produto que deseja remover:");
+        String nome = input.nextLine();
+
+        for (int i = 0; i < tam; i++) {
+            if (nomes[i].equalsIgnoreCase(nome)) {
+
+                for (int j = i; j < tam - 1; j++) {
+                    nomes[j] = nomes[j + 1];
+                    descricoes[j] = descricoes[j + 1];
+                    categorias[j] = categorias[j + 1];
+                    estoques[j] = estoques[j + 1];
+                    qtdMinima[j] = qtdMinima[j + 1];
+                    precos[j] = precos[j + 1];
+                }
+
+                System.out.println("Produto removido!");
+                return tam - 1;
+            }
+        }
+
+        System.out.println("Produto não encontrado.");
+        return tam;
+    }
+
+    // ---------------------------------------
+    // ATUALIZAR PREÇO
+    // ---------------------------------------
+    public static void atualizarPreco(int tam) {
+        input.nextLine();
+        System.out.println("Nome do produto para atualizar o preço:");
+        String nome = input.nextLine();
+
+        for (int i = 0; i < tam; i++) {
+            if (nomes[i].equalsIgnoreCase(nome)) {
+                System.out.println("Novo preço:");
+                precos[i] = input.nextDouble();
+                System.out.println("Preço atualizado!");
+                return;
+            }
+        }
+        System.out.println("Produto não encontrado.");
+    }
+
+    // ---------------------------------------
+    // SUBTOTAL POR CATEGORIA
+    // ---------------------------------------
+    public static void subtotal(int tam) {
+        input.nextLine();
+        System.out.println("Categoria:");
+        String categoriaBuscada = input.nextLine();
+
+        double soma = 0;
+        boolean achou = false;
+
+        for (int i = 0; i < tam; i++) {
+            if (categorias[i].equalsIgnoreCase(categoriaBuscada)) {
+                imprimir(i);
+                soma += precos[i] * estoques[i];
+                achou = true;
+            }
+        }
+
+        if (!achou) {
+            System.out.println("Nenhum produto encontrado nessa categoria.");
+        } else {
+            System.out.println("Subtotal: R$ " + soma);
+        }
+    }
+}
